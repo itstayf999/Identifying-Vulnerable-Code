@@ -1,2 +1,8 @@
 flask==3.0.3
 openai>=1.40.0
+python-dotenv>=1.0.0
+scikit-learn>=1.4.0
+numpy>=1.26.0
+pandas>=2.0.0
+matplotlib>=3.8.0
+tensorflow>=2.15.0
