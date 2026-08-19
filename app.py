@@ -21,8 +21,8 @@ BASE_DIR = Path(__file__).resolve().parent
 
 
 
-MODEL_PATH = r"C:\stack\results_logistic_regression\logistic_regression_model.pkl"
-VECTORIZER_PATH = r"C:\stack\results_logistic_regression\tfidf_vectorizer.pkl"
+MODEL_PATH = os.path.join(BASE_DIR, "models", "logistic_regression_model.pkl")
+VECTORIZER_PATH = os.path.join(BASE_DIR, "models", "tfidf_vectorizer.pkl")
 
 # Load local ML artifacts
 with open(MODEL_PATH, "rb") as f:
