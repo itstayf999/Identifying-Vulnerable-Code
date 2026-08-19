@@ -34,8 +34,9 @@ warnings.filterwarnings("ignore")
 # =========================================================
 # 1) CONFIG
 # =========================================================
-CSV_PATH = r"C:\stack\outputs_binary_v2\Binary_LSTM_RAW_v2.csv"
-OUT_DIR  = r"C:\stack\results_lstm_balanced_fixed"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "data", "Binary_LSTM_RAW_v2.csv")
+OUT_DIR = os.path.join(BASE_DIR, "models")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 RANDOM_SEED = 42
@@ -126,7 +127,7 @@ df = pd.read_csv(
 )
 
 
-# حذف الأعمدة الزايدة الناتجة عن parsing خربان
+# Remove extra columns created during parsing
 df = df.loc[:, ~df.columns.str.startswith("Unnamed")].copy()
 
 print("Loaded successfully.")
@@ -150,7 +151,7 @@ df[label_col] = pd.to_numeric(df[label_col], errors="coerce")
 df = df.dropna(subset=[label_col]).copy()
 df[label_col] = df[label_col].astype(int)
 
-# احتفظ فقط بالقيم الثنائية الصحيحة
+# Keep only valid binary values
 df = df[df[label_col].isin([0, 1])].copy()
 
 if df.empty:
@@ -359,4 +360,4 @@ plot_conf_matrix(
 plot_history(history, os.path.join(OUT_DIR, "training_loss.png"))
 
 print("\nSaved all outputs in:", OUT_DIR)
-print("DONE ")
+print("DONE")
