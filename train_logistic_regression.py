@@ -23,8 +23,9 @@ warnings.filterwarnings("ignore")
 # =========================================================
 # 1) CONFIG
 # =========================================================
-CSV_PATH = r"C:\stack\outputs_binary_v2\Binary_LSTM_RAW_v2.csv"
-OUT_DIR  = r"C:\stack\results_logistic_regression"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "data", "Binary_LSTM_RAW_v2.csv")
+OUT_DIR = os.path.join(BASE_DIR, "models")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 TEST_SIZE = 0.2
@@ -91,7 +92,7 @@ df = pd.read_csv(
 )
 
 
-# حذف الأعمدة الزايدة اللي طالعة من parsing وسخ
+# Remove extra columns created during parsing
 df = df.loc[:, ~df.columns.str.startswith("Unnamed")].copy()
 
 print("Loaded successfully.")
@@ -115,7 +116,7 @@ df[label_col] = pd.to_numeric(df[label_col], errors="coerce")
 df = df.dropna(subset=[label_col]).copy()
 df[label_col] = df[label_col].astype(int)
 
-# احتفظ فقط بالتصنيف الثنائي الصحيح
+# Keep only valid binary labels
 df = df[df[label_col].isin([0, 1])].copy()
 
 if df.empty:
@@ -258,4 +259,4 @@ plot_conf_matrix(
 )
 
 print("\nSaved all outputs in:", OUT_DIR)
-print("DONE ")
+print("DONE")
