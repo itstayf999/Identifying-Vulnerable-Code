@@ -87,7 +87,7 @@ async function analyze() {
   const status = document.getElementById("status");
 
   if (!code) {
-    status.textContent = "⚠ يرجى لصق الكود أولاً.";
+    status.textContent = "Please enter or paste code first.";
     status.className = "status-text error";
     return;
   }
@@ -95,7 +95,7 @@ async function analyze() {
   resetUI();
   btn.disabled = true;
   spinner.classList.remove("hidden");
-  btnText.textContent = "جارٍ التحليل...";
+  btnText.textContent = "Analyzing...";
   status.textContent = "";
   status.className = "status-text";
 
@@ -131,7 +131,7 @@ async function analyze() {
     if (data.ml_prediction !== undefined && data.ml_prediction !== null && data.ml_prediction !== "N/A") {
       const pred = String(data.ml_prediction).toLowerCase();
       const isVuln = ["1", "vulner", "unsafe", "weak"].some(w => pred.includes(w));
-      predictionEl.textContent = isVuln ? "Vulnerable ⚠" : "Secure ✓";
+      predictionEl.textContent = isVuln ? "Vulnerable" : "Secure";
       chip.classList.add(isVuln ? "prediction-vulnerable" : "prediction-secure");
     } else {
       predictionEl.textContent = "—";
@@ -162,21 +162,21 @@ async function analyze() {
     } else {
       const li = document.createElement("li");
       li.classList.add("no-issues");
-      li.textContent = "لم يتم العثور على مشكلات أمنية.";
+      li.textContent = "No security issues detected.";
       issuesEl.appendChild(li);
     }
 
     document.getElementById("rawjson").textContent = JSON.stringify(data, null, 2);
 
-    status.textContent = "✓ تم التحليل بنجاح.";
+    status.textContent = "Analysis completed successfully.";
     status.className = "status-text success";
 
   } catch (err) {
-    status.textContent = "✗ فشل التحليل: " + err.message;
+    status.textContent = "Analysis failed: " + err.message;
     status.className = "status-text error";
   } finally {
     btn.disabled = false;
     spinner.classList.add("hidden");
-    btnText.textContent = "🔍 Analyze";
+    btnText.textContent = "Analyze";
   }
 }
