@@ -1,0 +1,150 @@
+{% extends "base.html" %}
+{% block content %}
+
+<section class="hero-section">
+  <div class="container hero-grid">
+    <div class="hero-content">
+      <span class="hero-badge">AI + AppSec + Code Review</span>
+      <h1>
+        ارفع مستوى أمان كودك
+        <span>قبل أن تتحول الثغرة إلى خطر حقيقي</span>
+      </h1>
+      <p class="hero-text">
+        SecureCode منصة ذكية تساعدك في تحليل الأكواد البرمجية واكتشاف المشكلات الأمنية بسرعة،
+        مع عرض لغة البرمجة، درجة الأمان، وأهم نقاط الضعف بشكل واضح ومختصر.
+      </p>
+
+      <div class="hero-actions">
+        <a class="btn-primary" href="{{ url_for('analyzer_page') }}">حلّل كودك الآن</a>
+        <a class="btn-secondary" href="#features">استكشف المزايا</a>
+      </div>
+
+      <div class="hero-stats">
+        <div class="stat-card">
+          <strong>Fast</strong>
+          <span>تحليل سريع</span>
+        </div>
+        <div class="stat-card">
+          <strong>Secure</strong>
+          <span>تركيز أمني</span>
+        </div>
+        <div class="stat-card">
+          <strong>Clear</strong>
+          <span>نتائج واضحة</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="hero-visual">
+      <div class="glass-card preview-card">
+        <div class="preview-top">
+          <span class="dot red"></span>
+          <span class="dot yellow"></span>
+          <span class="dot green"></span>
+          <span class="preview-title">Security Review Preview</span>
+        </div>
+
+        <div class="terminal-box">
+<pre>
+detected_language: Python
+security_score: 78
+issues:
+- Hardcoded secrets
+- Missing input validation
+- Unsafe file handling
+</pre>
+        </div>
+
+        <div class="mini-cards">
+          <div class="mini-card">
+            <span>Language</span>
+            <strong>Python</strong>
+          </div>
+          <div class="mini-card">
+            <span>Score</span>
+            <strong>78/100</strong>
+          </div>
+          <div class="mini-card">
+            <span>Status</span>
+            <strong>Review Needed</strong>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features" class="section-block">
+  <div class="container">
+    <div class="section-head">
+      <span class="section-tag">خدماتنا</span>
+      <h2>واجهة بسيطة… لكن قوية في الفكرة والنتيجة</h2>
+      <p>المنصة مصممة لتقدم فحصًا أوليًا واضحًا ومناسبًا لمشاريع تحليل الثغرات البرمجية.</p>
+    </div>
+
+    <div class="feature-grid">
+      <div class="feature-card">
+        <div class="feature-icon">01</div>
+        <h3>تحليل أمني للكود</h3>
+        <p>اكتشاف المشكلات الشائعة مثل الإدخال غير الآمن، الأسرار المكشوفة، وبعض الأنماط الخطرة داخل الكود.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">02</div>
+        <h3>درجة أمان واضحة</h3>
+        <p>عرض Security Score لتكوين انطباع سريع عن مستوى أمان المقطع البرمجي المدخل.</p>
+      </div>
+
+      <div class="feature-card">
+        <div class="feature-icon">03</div>
+        <h3>مخرجات مختصرة</h3>
+        <p>النتائج تظهر بشكل مركز وواضح لتكون مناسبة للعرض الأكاديمي والتطبيق العملي.</p>
+      </div>
+      
+      <div class="feature-card">
+        <div class="feature-icon">03</div>
+        <h4>الاسماء </h4>
+        <p>سهام و ليان و عيده وطيف .</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section-block alt-block">
+  <div class="container">
+    <div class="section-head center">
+      <span class="section-tag">آلية العمل</span>
+      <h2>كيف تعمل المنصة؟</h2>
+    </div>
+
+    <div class="steps-grid">
+      <div class="step-box">
+        <div class="step-number">1</div>
+        <h3>ألصق الكود</h3>
+        <p>أدخل الكود البرمجي الذي تريد تحليله داخل الواجهة.</p>
+      </div>
+
+      <div class="step-box">
+        <div class="step-number">2</div>
+        <h3>ابدأ التحليل</h3>
+        <p>اضغط زر Analyze ليبدأ النظام بفحص الكود.</p>
+      </div>
+
+      <div class="step-box">
+        <div class="step-number">3</div>
+        <h3>استعرض النتائج</h3>
+        <p>ستظهر لغة البرمجة والدرجة الأمنية وأهم المشكلات في نفس الصفحة.</p>
+      </div>
+    </div>
+
+    <div class="cta-box">
+      <div>
+        <h3>جاهز لتجربة الواجهة؟</h3>
+        <p>يمكنك الانتقال الآن مباشرة إلى صفحة تحليل الأكواد.</p>
+      </div>
+      <a class="btn-primary" href="{{ url_for('analyzer_page') }}">اذهب إلى المحلل</a>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

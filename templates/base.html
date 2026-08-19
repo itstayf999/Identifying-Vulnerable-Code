@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>{{ title if title else "SecureCode" }}</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;600;700;800&display=swap" rel="stylesheet">
+</head>
+<body>
+  <div class="page-bg"></div>
+
+  <header class="site-header">
+    <div class="container nav-wrap">
+      <a href="{{ url_for('home') }}" class="brand">
+        <div class="brand-icon">S</div>
+        <div class="brand-text">
+          <span class="brand-title">SecureCode</span>
+          <span class="brand-sub">Code Vulnerability Analyzer</span>
+        </div>
+      </a>
+
+      <nav class="nav-links">
+        <a href="{{ url_for('home') }}">الرئيسية</a>
+        <a href="{{ url_for('analyzer_page') }}">محلل الأكواد</a>
+      </nav>
+
+      <a class="nav-btn" href="{{ url_for('analyzer_page') }}">ابدأ التحليل</a>
+    </div>
+  </header>
+
+  <main>
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-wrap">
+      <div>© 2026 SecureCode — منصة لتحليل الأكواد واكتشاف الثغرات</div>
+      <div class="footer-note">نتائج التحليل استرشادية وتحتاج مراجعة أمنية متخصصة عند الأنظمة الحساسة.</div>
+    </div>
+  </footer>
+
+  {% block scripts %}{% endblock %}
+</body>
+</html>

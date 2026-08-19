@@ -1,0 +1,314 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+:root {
+  --primary: #6366f1;
+  --primary-light: #818cf8;
+  --success: #10b981;
+  --warning: #f59e0b;
+  --danger: #ef4444;
+  --bg-card: rgba(255, 255, 255, 0.06);
+  --border: rgba(255, 255, 255, 0.12);
+  --text-primary: #f8fafc;
+  --text-secondary: #cbd5e1;
+}
+
+.analyzer-page { padding: 60px 0 100px; min-height: 100vh; }
+.analyzer-page .container { max-width: 1400px; margin: 0 auto; padding: 0 20px; }
+
+.analyzer-head { text-align: center; margin-bottom: 50px; }
+.analyzer-head h2 { font-size: 2.5rem; margin: 12px 0; }
+.analyzer-head p { color: var(--text-secondary); max-width: 600px; margin: 0 auto; }
+
+.section-tag {
+  display: inline-block; padding: 6px 16px;
+  background: rgba(99,102,241,0.15); color: var(--primary-light);
+  border: 1px solid rgba(99,102,241,0.3);
+  border-radius: 999px; font-size: 0.85rem; letter-spacing: 0.5px;
+}
+
+.analyzer-layout {
+  display: grid; grid-template-columns: 1fr 1fr;
+  gap: 24px; align-items: start;
+}
+@media (max-width: 1024px) { .analyzer-layout { grid-template-columns: 1fr; } }
+
+.glass-card {
+  background: var(--bg-card); border: 1px solid var(--border);
+  border-radius: 20px; padding: 28px;
+  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.2);
+}
+
+.panel-head {
+  display: flex; justify-content: space-between; align-items: center;
+  margin-bottom: 20px; padding-bottom: 16px; border-bottom: 1px solid var(--border);
+}
+.panel-head h3 { font-size: 1.2rem; margin: 0; }
+.panel-note { font-size: 0.85rem; color: var(--text-secondary); }
+
+/* Engine selector */
+.engine-selector {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 8px; margin-bottom: 18px; padding: 6px;
+  background: rgba(0,0,0,0.25); border-radius: 12px; border: 1px solid var(--border);
+}
+.engine-option { position: relative; cursor: pointer; }
+.engine-option input { position: absolute; opacity: 0; pointer-events: none; }
+.engine-option .engine-label {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 12px 8px; border-radius: 8px; transition: all 0.25s ease; text-align: center;
+}
+.engine-option .engine-label .icon { font-size: 1.3rem; margin-bottom: 4px; }
+.engine-option .engine-label .name { font-size: 0.9rem; font-weight: 600; }
+.engine-option .engine-label .desc { font-size: 0.7rem; color: var(--text-secondary); margin-top: 2px; }
+.engine-option input:checked + .engine-label {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light)); color: #fff;
+}
+.engine-option input:checked + .engine-label .desc { color: rgba(255,255,255,0.85); }
+
+/* Sample buttons */
+.sample-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 12px; }
+.sample-btn {
+  background: rgba(255,255,255,0.05); border: 1px solid var(--border);
+  color: var(--text-secondary); padding: 6px 12px;
+  border-radius: 8px; font-size: 0.8rem; cursor: pointer; transition: all 0.2s;
+}
+.sample-btn:hover {
+  background: rgba(99,102,241,0.15); border-color: var(--primary); color: var(--text-primary);
+}
+
+/* Code input */
+.code-input {
+  width: 100%; min-height: 320px;
+  background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+  border-radius: 12px; padding: 16px; color: var(--text-primary);
+  font-family: 'Fira Code','Consolas','Monaco',monospace;
+  font-size: 0.9rem; line-height: 1.6; resize: vertical;
+  direction: ltr; text-align: left; transition: border-color 0.2s;
+}
+.code-input:focus {
+  outline: none; border-color: var(--primary);
+  box-shadow: 0 0 0 3px rgba(99,102,241,0.15);
+}
+
+.action-row { display: flex; align-items: center; gap: 16px; margin-top: 20px; }
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--primary-light));
+  color: #fff; border: none; padding: 12px 32px;
+  border-radius: 10px; font-weight: 600; font-size: 1rem; cursor: pointer;
+  transition: transform 0.15s, box-shadow 0.15s, opacity 0.15s;
+  display: inline-flex; align-items: center; gap: 8px;
+}
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-2px); box-shadow: 0 8px 20px rgba(99,102,241,0.4);
+}
+.btn-primary:disabled { opacity: 0.6; cursor: not-allowed; }
+.btn-primary .spinner {
+  width: 16px; height: 16px;
+  border: 2px solid rgba(255,255,255,0.3); border-top-color: #fff;
+  border-radius: 50%; animation: spin 0.8s linear infinite;
+}
+.btn-primary .spinner.hidden { display: none; }
+@keyframes spin { to { transform: rotate(360deg); } }
+
+.status-text { font-size: 0.9rem; color: var(--text-secondary); }
+.status-text.error { color: var(--danger); }
+.status-text.success { color: var(--success); }
+
+/* Score circle */
+.score-display { display: flex; align-items: center; justify-content: center; margin-bottom: 24px; }
+.score-circle { position: relative; width: 160px; height: 160px; }
+.score-circle svg { transform: rotate(-90deg); }
+.score-circle .bg-ring { fill: none; stroke: rgba(255,255,255,0.08); stroke-width: 12; }
+.score-circle .progress-ring {
+  fill: none; stroke-width: 12; stroke-linecap: round;
+  stroke: var(--primary); transition: stroke-dashoffset 1s ease, stroke 0.3s ease;
+}
+.score-circle .score-text {
+  position: absolute; inset: 0; display: flex;
+  flex-direction: column; align-items: center; justify-content: center;
+}
+.score-circle .score-value { font-size: 2.4rem; font-weight: 700; line-height: 1; }
+.score-circle .score-label {
+  font-size: 0.7rem; color: var(--text-secondary);
+  margin-top: 4px; letter-spacing: 0.5px; text-transform: uppercase;
+}
+
+/* Info chips */
+.info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+.info-chip {
+  background: rgba(0,0,0,0.25); border: 1px solid var(--border);
+  border-radius: 12px; padding: 14px 16px;
+}
+.info-chip .label {
+  font-size: 0.72rem; color: var(--text-secondary);
+  margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.5px;
+}
+.info-chip .value { font-size: 1rem; font-weight: 600; }
+.info-chip.prediction-secure .value { color: var(--success); }
+.info-chip.prediction-vulnerable .value { color: var(--danger); }
+
+/* Issues */
+.issues-box { margin-top: 20px; }
+.issues-box h4 { font-size: 1rem; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.issues-list { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 8px; }
+.issues-list li {
+  background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2);
+  border-radius: 10px; padding: 10px 14px; font-size: 0.9rem;
+  display: flex; align-items: flex-start; gap: 10px; animation: slideIn 0.3s ease;
+}
+.issues-list li::before { content: "⚠"; color: var(--warning); flex-shrink: 0; }
+.issues-list li.no-issues {
+  background: rgba(16,185,129,0.08); border-color: rgba(16,185,129,0.2);
+}
+.issues-list li.no-issues::before { content: "✓"; color: var(--success); }
+.issues-list li.placeholder {
+  background: transparent; border: 1px dashed var(--border);
+  color: var(--text-secondary); justify-content: center;
+}
+.issues-list li.placeholder::before { content: ""; }
+@keyframes slideIn {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Raw JSON */
+.raw-box { margin-top: 20px; border-top: 1px solid var(--border); padding-top: 16px; }
+.raw-box summary { cursor: pointer; font-size: 0.85rem; color: var(--text-secondary); user-select: none; }
+.raw-box summary:hover { color: var(--text-primary); }
+.raw-box pre {
+  background: rgba(0,0,0,0.35); border: 1px solid var(--border);
+  border-radius: 10px; padding: 14px; margin-top: 12px;
+  font-size: 0.8rem; max-height: 300px; overflow: auto;
+  direction: ltr; text-align: left;
+}
+</style>
+
+<section class="analyzer-page">
+  <div class="container">
+    <div class="section-head analyzer-head">
+      <span class="section-tag">SecureCode Analyzer</span>
+      <h2>محلل الأكواد البرمجية</h2>
+      <p>الصق الكود البرمجي، اختر محرّك التحليل، ثم اضغط Analyze لعرض درجة الأمان والمشكلات المكتشفة فورًا.</p>
+    </div>
+
+    <div class="analyzer-layout">
+
+      <!-- Input panel -->
+      <div class="glass-card input-panel">
+        <div class="panel-head">
+          <h3>📝 إدخال الكود</h3>
+          <span class="panel-note">حد أقصى 20,000 حرف</span>
+        </div>
+
+        <div class="engine-selector">
+          <label class="engine-option">
+            <input type="radio" name="engine" value="ml">
+            <div class="engine-label">
+              <span class="icon">🤖</span>
+              <span class="name">ML</span>
+              <span class="desc">نموذجنا</span>
+            </div>
+          </label>
+          <label class="engine-option">
+            <input type="radio" name="engine" value="openai">
+            <div class="engine-label">
+              <span class="icon">✨</span>
+              <span class="name">OpenAI</span>
+              <span class="desc">GPT-4</span>
+            </div>
+          </label>
+          <label class="engine-option">
+            <input type="radio" name="engine" value="hybrid" checked>
+            <div class="engine-label">
+              <span class="icon">⚡</span>
+              <span class="name">Hybrid</span>
+              <span class="desc">الأفضل</span>
+            </div>
+          </label>
+        </div>
+
+        <div class="sample-row">
+          <span class="panel-note">أمثلة سريعة:</span>
+          <button class="sample-btn" data-sample="sql" type="button">SQL Injection</button>
+          <button class="sample-btn" data-sample="xss" type="button">XSS</button>
+          <button class="sample-btn" data-sample="safe" type="button">كود آمن</button>
+        </div>
+
+        <textarea id="code" class="code-input"
+          placeholder="// Paste your code here..."></textarea>
+
+        <div class="action-row">
+          <button id="btn" class="btn-primary" onclick="analyze()">
+            <span class="spinner hidden" id="spinner"></span>
+            <span id="btnText">🔍 Analyze</span>
+          </button>
+          <span id="status" class="status-text"></span>
+        </div>
+      </div>
+
+      <!-- Result panel -->
+      <div class="glass-card result-panel">
+        <div class="panel-head">
+          <h3>📊 نتيجة التحليل</h3>
+          <span class="panel-note" id="engineBadge">-</span>
+        </div>
+
+        <div class="score-display">
+          <div class="score-circle">
+            <svg width="160" height="160">
+              <circle class="bg-ring" cx="80" cy="80" r="68"></circle>
+              <circle class="progress-ring" id="progressRing"
+                      cx="80" cy="80" r="68"
+                      stroke-dasharray="427" stroke-dashoffset="427"></circle>
+            </svg>
+            <div class="score-text">
+              <div class="score-value" id="score">-</div>
+              <div class="score-label">Security Score</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="info-grid">
+          <div class="info-chip">
+            <div class="label">Language</div>
+            <div class="value" id="lang">-</div>
+          </div>
+          <div class="info-chip" id="predictionChip">
+            <div class="label">ML Prediction</div>
+            <div class="value" id="prediction">-</div>
+          </div>
+          <div class="info-chip">
+            <div class="label">Confidence</div>
+            <div class="value" id="confidence">-</div>
+          </div>
+          <div class="info-chip">
+            <div class="label">Engine Used</div>
+            <div class="value" id="engineUsed">-</div>
+          </div>
+        </div>
+
+        <div class="issues-box">
+          <h4>🛡️ المشكلات المكتشفة</h4>
+          <ul id="issues" class="issues-list">
+            <li class="placeholder">سيتم عرض النتائج هنا بعد التحليل</li>
+          </ul>
+        </div>
+
+        <details class="raw-box">
+          <summary>عرض Raw JSON</summary>
+          <pre id="rawjson">{}</pre>
+        </details>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='app.js') }}"></script>
+{% endblock %}
