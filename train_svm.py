@@ -24,8 +24,9 @@ warnings.filterwarnings("ignore")
 # =========================================================
 # 1) CONFIG
 # =========================================================
-CSV_PATH = r"C:\stack\outputs_binary_v2\Binary_LSTM_RAW_v2.csv"
-OUT_DIR  = r"C:\stack\results_linear_svm"
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+CSV_PATH = os.path.join(BASE_DIR, "data", "Binary_LSTM_RAW_v2.csv")
+OUT_DIR = os.path.join(BASE_DIR, "models")
 os.makedirs(OUT_DIR, exist_ok=True)
 
 TEST_SIZE = 0.2
@@ -220,4 +221,4 @@ plot_conf_matrix(cm, "Linear SVM - Confusion Matrix",
                  os.path.join(OUT_DIR, "confusion_matrix.png"))
 
 print("\nSaved all outputs in:", OUT_DIR)
-print("DONE ✅")
+print("DONE")
